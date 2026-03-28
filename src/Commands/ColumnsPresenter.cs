@@ -31,7 +31,7 @@ namespace ShowColumns.Commands
                         var item = items[itemIndex];
 
                         if (columnIndex > 0)
-                            lineWriter.WritePadding(1);
+                            lineWriter.WritePadding(4);
 
                         var displayedName = item.Width <= columnWidth
                             ? item.Name
@@ -42,7 +42,7 @@ namespace ShowColumns.Commands
 
                         if (columnIndex < (columnCount - 1))
                         {
-                            var padding = columnWidth - displayedName.Length;
+                            var padding = columnWidth - item.Width;
                             lineWriter.WritePadding(padding);
                         }
                     }
@@ -60,7 +60,7 @@ namespace ShowColumns.Commands
             for (var columnCount = items.Count; columnCount > 0; columnCount--)
             {
                 var columnWidths = GetColumnWidths(items, columnCount);
-                var totalWidth = columnWidths.Sum() + (columnWidths.Count - 1);
+                var totalWidth = columnWidths.Sum() + (columnWidths.Count - 1) * 4;
 
                 if (totalWidth <= availableWidth)
                 {
@@ -68,7 +68,7 @@ namespace ShowColumns.Commands
                 }
                 else if (columnCount == minimumColumnCount)
                 {
-                    var totalSpaces = columnCount - 1;
+                    var totalSpaces = (columnCount - 1) * 4;
                     var columnWidth = (availableWidth - totalSpaces) / columnCount;
                     return Enumerable.Repeat(columnWidth, columnCount).ToList();
                 }
@@ -90,6 +90,9 @@ namespace ShowColumns.Commands
                 if (columnWidths[columnIndex] < items[index].Width)
                     columnWidths[columnIndex] = items[index].Width;
             }
+
+            for (var i = 0; i < columnWidths.Length; i++)
+                columnWidths[i] = (columnWidths[i] + 3) / 4 * 4;
 
             return columnWidths;
         }
